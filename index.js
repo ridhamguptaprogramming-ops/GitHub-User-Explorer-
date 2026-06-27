@@ -67,4 +67,31 @@ function updateThemeIcon(theme) {
 initTheme();
 themeToggle.addEventListener('click', toggleTheme);
 
+function showLoading() {
+    loadingIndicator.classList.remove('hidden');
+    userProfile.classList.add('hidden');
+    repositoriesSection.classList.add('hidden');
+    errorMessage.classList.add('hidden');
+    hero.classList.add('hidden');
+    hideAutocomplete();
+}
 
+
+function hideLoading() {
+    loadingIndicator.classList.add('hidden');
+}
+
+function showError(message) {
+    errorMessage.textContent = message;
+    errorMessage.classList.remove('hidden');
+    userProfile.classList.add('hidden');
+    repositoriesSection.classList.add('hidden');
+    hero.classList.add('hidden');
+    setTimeout(() => {
+        errorMessage.classList.add('hidden');
+    }, 5000);
+}
+
+function hideError() {
+    errorMessage.classList.add('hidden');
+}
