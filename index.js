@@ -129,3 +129,125 @@ function hideAutocomplete() {
     autocompleteDropdown.classList.add('hidden');
     recentSearchesList.classList.add('hidden');
 }
+
+
+function showAutocompleteList(items) {
+    autocompleteDropdown.innerHTML = '';
+
+    if (!items || items.length === 0) {
+        hideAutocomplete();
+        return;
+    }
+
+    items.forEach(name => {
+        const li = document.createElement('li');
+        li.className = 'autocomplete-item';
+        li.tabIndex = 0;
+        li.textContent = name;
+        li.addEventListener('click', () => {
+            usernameInput.value = name;
+            hideAutocomplete();
+            handleSearch();
+        });
+        li.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                usernameInput.value = name;
+                hideAutocomplete();
+                handleSearch();
+            }
+        });
+        autocompleteDropdown.appendChild(li);
+    });
+
+    autocompleteDropdown.classList.remove('hidden');
+    recentSearchesList.classList.add('hidden');
+}
+async function fetchUserData(username) {
+    const response = await fetch(`https://api.github.com/users/${username}`);
+    const data = await response.json().catch(() => null);
+
+    if (!response.ok) {
+        if (response.status === 404) {
+            throw new Error('User not found');
+        }
+        if (response.status === 403 && data && /rate limit/i.test(data.message || '')) {
+            throw new Error('API rate limit exceeded. Try again later or authenticate with a token.');
+        }
+        throw new Error(data && data.message ? data.message : `API Error: ${response.status}`);
+    }
+
+    return data;
+}
+
+async function fetchUserRepositories(username) {
+    const response = await fetch(`https://api.github.com/users/${username}/repos?per_page=100&sort=stars&order=desc`);
+    const data = await response.json().catch(() => null);
+
+    if (!response.ok) {
+        if (response.status === 403 && data && /rate limit/i.test(data.message || '')) {
+            throw new Error('API rate limit exceeded. Try again later or authenticate with a token.');
+        }
+        throw new Error(data && data.message ? data.message : `Failed to fetch repositories: ${response.status}`);
+    }
+
+    return data;
+}
+function displayUserProfile(userData) {
+    document.getElementById('avatar').src = userData.avatar_url || '';
+    document.getElementById('avatar').alt = `${userData.login || 'User'}'s avatar`;
+
+    document.getElementById('username').textContent = userData.login || 'N/A';
+
+    const displayNameEl = document.getElementById('displayName');
+    if (userData.name) {
+        displayNameEl.textContent = userData.name;
+        displayNameEl.classList.remove('hidden');
+    } else {
+        displayNameEl.classList.add('hidden');
+    }
+
+    const bioEl = document.getElementById('bio');
+    if (userData.bio) {
+        bioEl.textContent = userData.bio;
+        bioEl.classList.remove('hidden');
+    } else {
+        bioEl.classList.add('hidden');
+    }
+
+    const locationEl = document.getElementById('location');
+    if (userData.location) {
+        locationEl.textContent = userData.location;
+        locationEl.classList.remove('hidden');
+    } else {
+        locationEl.classList.add('hidden');
+    }
+
+    const companyEl = document.getElementById('company');
+    if (userData.company) {
+        companyEl.textContent = userData.company;
+        companyEl.classList.remove('hidden');
+    } else {
+        companyEl.classList.add('hidden');
+    }
+
+    const websiteEl = document.getElementById('website');
+    if (userData.blog) {
+        websiteEl.textContent = userData.blog;
+        websiteEl.href = userData.blog;
+        websiteEl.classList.remove('hidden');
+    } else {
+        websiteEl.classList.add('hidden');
+    }
+
+    const joinDateEl = document.getElementById('joinDate');
+    const joined = formatDate(userData.created_at);
+    if (joined) {
+        joinDateEl.textContent = joined;
+        joinDateEl.classList.remove('hidden');
+    } else {
+        joinDateEl.classList.add('hidden');
+    }
+
+    document.getElementById('followers').textContent = formatNumber(userData.followers || 0);
+    document.getElementById('following').textContent = formatNumber(userData.following || 0);
+    document.getElementById('publicRepos').textContent = formatNumber(userData.public_repos || 0);
