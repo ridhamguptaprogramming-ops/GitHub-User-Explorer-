@@ -15,6 +15,15 @@ const repoControls = document.getElementById('repoControls');
 const typingText = document.getElementById('typingText');
 
 
+// Paging state
+let currentRepos = [];
+let currentRepoIndex = 0;
+const REPOS_BATCH_SIZE = 9;
+
+let currentPhraseIndex = 0;
+let currentCharIndex = 0;
+let isDeleting = false;
+
 function typeAnimation() {
     const phrase = typingPhrases[currentPhraseIndex];
     const displayText = isDeleting ? phrase.substring(0, currentCharIndex) : phrase.substring(0, currentCharIndex);
@@ -94,4 +103,29 @@ function showError(message) {
 
 function hideError() {
     errorMessage.classList.add('hidden');
+}
+
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+function formatNumber(value) {
+    const n = typeof value === 'number' ? value : Number(value);
+    if (Number.isNaN(n)) return '0';
+    return n.toLocaleString();
+}
+
+function formatDate(value) {
+    if (!value) return '';
+    const d = new Date(value);
+    if (Number.isNaN(d.getTime())) return '';
+    return d.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: '2-digit' });
+}
+
+function hideAutocomplete() {
+    autocompleteDropdown.classList.add('hidden');
+    recentSearchesList.classList.add('hidden');
 }
