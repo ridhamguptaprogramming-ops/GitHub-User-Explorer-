@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevScope - GitHub Developer Analytics Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Grid Background -->
+    <div class="grid-background"></div>
+    <div class="radial-glow"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-left">
+                <a id="homeLogo" class="logo" href="#" aria-label="Go to Home">
+                    <svg class="logo-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2L2 7L2 17L12 22L22 17L22 7L12 2Z"/>
+                        <circle cx="12" cy="12" r="3" fill="currentColor"/>
+                    </svg>
+                    <span class="logo-text">DevScope</span>
+                </a>
+            </div>
+            <div class="navbar-right">
+                <button class="nav-button" type="button">Compare</button>
+                <button id="homeBtn" class="nav-button nav-button-home" type="button">Home</button>
+                <button id="themeToggle" class="theme-toggle-nav" aria-label="Toggle theme">
+                    <span id="themeIcon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+             <h1 class="hero-title">Explore refined GitHub developer analytics<br/><span class="accent">beyond the profile page.</span></h1>
+            <p class="hero-subtitle" id="typingText"></p>
+            <p class="hero-subtext">Powered by GitHub API</p>
+        </div>
+
+        <!-- Search Container -->
+        <div class="search-container-wrapper">
+            <div class="search-container">
+                <svg class="search-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="9" cy="9" r="7"></circle>
+                    <path d="m14 14 4 4"></path>
+                </svg>
+                <input 
+                    type="text" 
+                    id="usernameInput" 
+                    class="search-input" 
+                    placeholder="Search GitHub username..."
+                    autocomplete="off"
+                    aria-label="Search GitHub username"
+                >
+                <button id="searchBtn" class="search-button">
+                    <span>Search</span>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M2 8h12M8 2v12"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Recent Searches / Autocomplete -->
+        <div class="autocomplete-wrapper" aria-label="Search suggestions">
+            <datalist id="recentSuggestions"></datalist>
+            <ul id="recentSearches" class="recent-searches hidden" aria-label="Recent searches"></ul>
+            <ul id="autocompleteDropdown" class="autocomplete-dropdown hidden" role="listbox" aria-label="Autocomplete suggestions"></ul>
+        </div>
+    </section>
+
+    <!-- Loading Indicator -->
+    <div id="loadingIndicator" class="loading hidden" role="status" aria-live="polite">
+        <div class="loader"></div>
+        <p>Analyzing GitHub profile...</p>
+    </div>
+
+    <!-- Error Message -->
+    <div id="errorMessage" class="error-message hidden" role="alert" aria-live="assertive"></div>
+
+    <!-- User Profile Section -->
+    <section id="userProfile" class="user-profile hidden">
+        <div class="profile-card">
+            <div class="profile-header">
+                <img id="avatar" src="" alt="User Avatar" class="avatar">
+                <div class="profile-info">
+                    <div class="profile-identity">
+                        <h3 id="displayName" class="profile-displayname hidden"></h3>
+                        <h2 id="username" class="profile-username"></h2>
+                    </div>
+
+                    <p id="bio" class="profile-bio hidden"></p>
+
+                    <div class="profile-details">
+                        <div class="profile-detail">
+                            <span class="profile-detail-label">Location</span>
+                            <span id="location" class="profile-detail-value hidden"></span>
+                        </div>
+                        <div class="profile-detail">
+                            <span class="profile-detail-label">Company</span>
+                            <span id="company" class="profile-detail-value hidden"></span>
+                        </div>
+                        <div class="profile-detail">
+                            <span class="profile-detail-label">Website</span>
+                            <a id="website" class="profile-detail-link hidden" href="#" target="_blank" rel="noopener noreferrer">—</a>
+                        </div>
+                        <div class="profile-detail">
+                            <span class="profile-detail-label">Joined</span>
+                            <span id="joinDate" class="profile-detail-value hidden"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-stats">
+                <div class="stat">
+                    <span class="stat-label">Followers</span>
+                    <span id="followers" class="stat-value"></span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Following</span>
+                    <span id="following" class="stat-value"></span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Public Repositories</span>
+                    <span id="publicRepos" class="stat-value"></span>
+                </div>
+            </div>
+
+            <a id="githubLink" href="" target="_blank" rel="noopener noreferrer" class="github-button">
+                View GitHub Profile
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 13h10M13 3l-10 10M13 3v7h-7"/>
+                </svg>
+            </a>
+        </div>
+    </section>
+
+    <!-- Repositories Section -->
+    <section id="repositoriesSection" class="repositories-section hidden">
+        <div class="section-container">
+            <h2 class="section-title">Top Repositories</h2>
+            <div id="repositoriesContainer" class="repositories-grid"></div>
+            <div id="repoControls" class="repo-controls"></div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>DevScope © 2026 • Powered by <a href="https://docs.github.com/en/rest" target="_blank" rel="noopener">GitHub API</a></p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
