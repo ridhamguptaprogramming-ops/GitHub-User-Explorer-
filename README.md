@@ -190,22 +190,4 @@ During this project, I gained hands-on experience with:
 - Theme Management
 - Error Handling
 
----
 
-# 👨‍💻 Author
-
-**Harsh Sharma**
-
-GitHub: https://github.com/your-github-username
-
----
-
-# 📄 License
-
-This project is created for educational and portfolio purposes.
-
----
-
-## ⭐ Support
-
-If you found this project helpful, consider giving it a **⭐ Star** on GitHub.
