@@ -189,5 +189,3 @@ During this project, I gained hands-on experience with:
 - CSS Animations
 - Theme Management
 - Error Handling
-
-
